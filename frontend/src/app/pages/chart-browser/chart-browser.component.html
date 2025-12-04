@@ -1,0 +1,115 @@
+<div class="chart-browser-container">
+  <h2>Chart Browser</h2>
+  <p class="description">
+    Browse through the collection of birth charts. Filter by zodiac signs and manage your chart collection.
+  </p>
+  
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading charts...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !isLoading" class="error-state">
+    <h3>⚠️ Error Loading Charts</h3>
+    <p>{{ error }}</p>
+    <button (click)="retryLoadCharts()" class="retry-btn">Retry</button>
+  </div>
+
+  <!-- Filters and Controls -->
+  <div *ngIf="!isLoading" class="controls-section">
+    <div class="filter-group">
+      <label for="sunSign-filter">Sun Sign</label>
+      <select 
+        id="sunSign-filter"
+        [(ngModel)]="filters.sunSign" 
+        (change)="onFilterChange()" 
+        class="filter-select"
+      >
+        <option value="">All Signs</option>
+        <option *ngFor="let sign of zodiacSigns" [value]="sign">
+          {{ sign }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="sortBy-select">Sort By</label>
+      <select 
+        id="sortBy-select"
+        [(ngModel)]="filters.sortBy" 
+        (change)="onFilterChange()" 
+        class="filter-select"
+      >
+        <option value="name">Name</option>
+        <option value="createdAt">Newest</option>
+        <option value="birthDate">Birth Date</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="sortOrder-select">Sort Order</label>
+      <select 
+        id="sortOrder-select"
+        [(ngModel)]="filters.sortOrder"
+        (change)="onFilterChange()" 
+        class="filter-select"
+      >
+        <option value="asc">ASC</option>
+        <option value="desc">DESC</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="pageSize-select">Per Page</label>
+      <select 
+        id="pageSize-select"
+        [(ngModel)]="filters.limit" 
+        (change)="onFilterChange()" 
+        class="filter-select"
+      >
+        <option *ngFor="let size of pageSizeOptions" [value]="size">{{ size }} items</option>
+      </select>
+    </div>
+
+    <button (click)="resetFilters()" class="reset-btn"><i class="fa-solid fa-rotate"></i>&nbsp;Reset Filters</button>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!isLoading && !error && charts.length === 0" class="empty-state">
+    <h3>No Charts Found</h3>
+    <p>There are currently no astrological charts available.</p>
+  </div>
+
+  <!-- Charts Grid -->
+  <div *ngIf="!isLoading && !error && charts.length > 0" class="charts-grid">
+    <app-chart-card 
+      *ngFor="let chart of charts" 
+      [chart]="chart"
+      (edit)="editChart($event)"
+      (delete)="deleteChart($event)"
+    ></app-chart-card>
+  </div>
+
+  <!-- Pagination -->
+  <div *ngIf="!isLoading && !error && charts.length > 0" class="pagination">
+    <button 
+      (click)="previousPage()" 
+      [disabled]="currentPage === 1"
+      class="pagination-btn"
+    >
+      ← Previous
+    </button>
+    <span class="page-info">
+      Page {{ currentPage }} of {{ totalPages }} ({{ totalCharts }} total)
+    </span>
+    <button 
+      (click)="nextPage()" 
+      [disabled]="currentPage >= totalPages"
+      class="pagination-btn"
+    >
+      Next →
+    </button>
+  </div>
+</div>
