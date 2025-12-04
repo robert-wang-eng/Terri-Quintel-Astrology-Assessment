@@ -1,0 +1,65 @@
+<div class="chart-card">
+  <div class="chart-header">
+    <h3>{{ chart.name }}</h3>
+    <div class="chart-header-right">
+      <button 
+        class="action-btn" 
+        (click)="onEdit()"
+        title="Update chart"
+      >
+        <i class="fa-solid fa-pen-to-square"></i>
+      </button>
+
+      <button 
+        class="action-btn delete-btn"
+        (click)="onDelete()" 
+        title="Delete chart"
+      >
+        <i class="fa-solid fa-trash"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="chart-info">
+    <div class="info-group">
+      <label>Birth Date</label>
+      <p>{{ formatDate(chart.birthDate) }}</p>
+    </div>
+    <div class="info-group">
+      <label>Birth Time</label>
+      <p>{{ chart.birthTime }}</p>
+    </div>
+    <div class="info-group">
+      <label>Birth Location</label>
+      <p>{{ chart.birthLocation }}</p>
+    </div>
+  </div>
+
+  <div class="zodiac-section">
+    <h4>Zodiac Signs</h4>
+    <div class="zodiac-grid">
+      <div class="zodiac-item">
+        <span class="zodiac-label">☀️ Sun</span>
+        <span class="zodiac-sign">{{ chart.sunSign }}</span>
+      </div>
+      <div class="zodiac-item">
+        <span class="zodiac-label">🌙 Moon</span>
+        <span class="zodiac-sign">{{ chart.moonSign }}</span>
+      </div>
+      <div class="zodiac-item">
+        <span class="zodiac-label">⬆️ Rising</span>
+        <span class="zodiac-sign">{{ chart.risingSign }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="planets-section">
+    <h4>Planetary Positions</h4>
+    <div class="planets-list">
+      <div class="planet-item" *ngFor="let planet of getPlanetsList(chart)">
+        <span class="planet-name">{{ planet.name }}</span>
+        <span class="planet-position">{{ planet.sign }} {{ planet.degree }}°</span>
+      </div>
+    </div>
+  </div>
+</div>
