@@ -190,6 +190,12 @@ exports.updateChart = async (req, res) => {
             });
         }
 
+        // Check if astrological data needs to be recalculated
+        const shouldRecalculate = 
+            req.body.birthDate || 
+            req.body.birthTime || 
+            req.body.birthLocation;
+
         // Update fields
         const allowedUpdates = ['name', 'notes', 'isPublic', 'birthTime', 'birthLocation'];
         allowedUpdates.forEach(field => {
@@ -201,6 +207,15 @@ exports.updateChart = async (req, res) => {
         // Handle birthDate separately
         if (req.body.birthDate) {
             chart.birthDate = new Date(req.body.birthDate);
+        }
+
+        // Recalculate astrological data if birth info changed
+        if (shouldRecalculate) {
+            const astroData = generateAstrologicalData(chart.birthDate, chart.birthTime, chart.birthLocation);
+            chart.sunSign = astroData.sunSign;
+            chart.moonSign = astroData.moonSign;
+            chart.risingSign = astroData.risingSign;
+            chart.planets = astroData.planets;
         }
 
         await chart.save();
