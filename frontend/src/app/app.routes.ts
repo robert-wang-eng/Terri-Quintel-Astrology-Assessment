@@ -8,11 +8,15 @@ export const routes: Routes = [
   },
   {
     path: 'task1',
-    loadComponent: () => import('./task1/task1.component').then(m => m.Task1Component)
+    loadComponent: () => import('./pages/chart-browser/chart-browser.component').then(m => m.ChartBrowserComponent)
   },
   {
     path: 'task2',
-    loadComponent: () => import('./task2/task2.component').then(m => m.Task2Component)
-  }
+    loadComponent: () => import('./pages/chart-calculator/chart-calculator.component').then(m => m.ChartCalculatorComponent)
+  },
+  {
+    path: 'update-chart/:id',
+    loadComponent: () => import('./pages/update-chart/update-chart.component').then(m => m.UpdateChartComponent)
+  },
 ];
 

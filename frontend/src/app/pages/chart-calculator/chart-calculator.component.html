@@ -1,0 +1,137 @@
+<div class="chart-calculator-container">
+  <h2>Chart Calculator</h2>
+  <p class="description">
+    Enter your birth information to calculate your astrological birth chart and discover your planetary positions.
+  </p>
+  
+  <div class="content-wrapper">
+    <!-- Form Section -->
+    <div class="form-section">
+      <form [formGroup]="chartForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="birthDate">Birth Date *</label>
+          <input
+            type="date"
+            id="birthDate"
+            formControlName="birthDate"
+            class="form-control"
+            [class.is-invalid]="isFieldInvalid('birthDate')"
+          />
+          <div *ngIf="isFieldInvalid('birthDate')" class="error-message">
+            <span *ngIf="chartForm.get('birthDate')?.hasError('required')">Birth date is required</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="birthTime">Birth Time *</label>
+          <input
+            type="time"
+            id="birthTime"
+            formControlName="birthTime"
+            class="form-control"
+            [class.is-invalid]="isFieldInvalid('birthTime')"
+          />
+          <div *ngIf="isFieldInvalid('birthTime')" class="error-message">
+            <span *ngIf="chartForm.get('birthTime')?.hasError('required')">Birth time is required</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="birthLocation">Birth Location *</label>
+          <input
+            type="text"
+            id="birthLocation"
+            formControlName="birthLocation"
+            placeholder="e.g., New York, NY"
+            class="form-control"
+            [class.is-invalid]="isFieldInvalid('birthLocation')"
+          />
+          <div *ngIf="isFieldInvalid('birthLocation')" class="error-message">
+            <span *ngIf="chartForm.get('birthLocation')?.hasError('required')">Birth location is required</span>
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          class="submit-btn"
+          [disabled]="isLoading || chartForm.invalid"
+        >
+          <span *ngIf="!isLoading">Calculate Chart</span>
+          <span *ngIf="isLoading">
+            <span class="spinner-small"></span>
+            Calculating...
+          </span>
+        </button>
+      </form>
+
+      <!-- API Error Message -->
+      <div *ngIf="apiError" class="alert alert-error">
+        <strong>Error:</strong> {{ apiError }}
+      </div>
+    </div>
+
+    <!-- Result Section -->
+    <div class="result-section" *ngIf="chartResult">
+      <div class="result-header">
+        <h3>Your Birth Chart</h3>
+        <button class="close-btn" (click)="clearResult()" title="Close">×</button>
+      </div>
+
+      <!-- Birth Information -->
+      <div class="result-card">
+        <h4>Birth Information</h4>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">Date</span>
+            <span class="value">{{ formatDate(chartResult.birthDate) }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Time</span>
+            <span class="value">{{ chartResult.birthTime }}</span>
+          </div>
+          <div class="info-item">
+            <span class="label">Location</span>
+            <span class="value">{{ chartResult.birthLocation }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Signs -->
+      <div class="result-card zodiac-card">
+        <h4>Main Signs</h4>
+        <div class="zodiac-grid">
+          <div class="zodiac-item">
+            <div class="zodiac-emoji">☀️</div>
+            <div class="zodiac-name">Sun</div>
+            <div class="zodiac-sign">{{ chartResult.sunSign }}</div>
+          </div>
+          <div class="zodiac-item">
+            <div class="zodiac-emoji">🌙</div>
+            <div class="zodiac-name">Moon</div>
+            <div class="zodiac-sign">{{ chartResult.moonSign }}</div>
+          </div>
+          <div class="zodiac-item">
+            <div class="zodiac-emoji">⬆️</div>
+            <div class="zodiac-name">Rising</div>
+            <div class="zodiac-sign">{{ chartResult.risingSign }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Planetary Positions -->
+      <div class="result-card">
+        <h4>Planetary Positions</h4>
+        <div class="planets-list">
+          <div class="planet-item" *ngFor="let planet of getPlanetsList()">
+            <div class="planet-info">
+              <span class="planet-name">{{ planet.name }}</span>
+              <span class="planet-position">{{ planet.sign }} {{ planet.degree }}°</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="reset-btn" (click)="resetForm()">Calculate Another Chart</button>
+    </div>
+  </div>
+</div>
